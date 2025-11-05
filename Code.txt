@@ -1,0 +1,178 @@
+Perfect! I’ll give you **full, ready-to-run Python code** for all six algorithms, with inputs and outputs, so you can literally copy, run, and test each one. No placeholders—everything self-contained.
+
+---
+
+### 1. **Fibonacci Numbers**
+
+```python
+# Recursive Fibonacci
+def fib_recursive(n):
+    if n <= 1:
+        return n
+    return fib_recursive(n-1) + fib_recursive(n-2)
+
+# Iterative Fibonacci
+def fib_iterative(n):
+    a, b = 0, 1
+    for _ in range(n-1):
+        a, b = b, a + b
+    return b
+
+# Example
+n = 10
+print("Recursive Fibonacci of", n, ":", fib_recursive(n))
+print("Iterative Fibonacci of", n, ":", fib_iterative(n))
+```
+
+---
+
+### 2. **Huffman Encoding**
+
+```python
+from heapq import heappush, heappop, heapify
+
+class Node:
+    def __init__(self, ch, freq, left=None, right=None):
+        self.ch, self.freq, self.left, self.right = ch, freq, left, right
+    def __lt__(self, other):
+        return self.freq < other.freq
+
+def huffman(freq_dict):
+    heap = [Node(ch, f) for ch, f in freq_dict.items()]
+    heapify(heap)
+    while len(heap) > 1:
+        a = heappop(heap)
+        b = heappop(heap)
+        heappush(heap, Node(None, a.freq + b.freq, a, b))
+    root = heap[0]
+
+    codes = {}
+    def assign_codes(node, s):
+        if node:
+            if node.ch is not None:
+                codes[node.ch] = s
+            assign_codes(node.left, s + '0')
+            assign_codes(node.right, s + '1')
+    assign_codes(root, '')
+    return codes
+
+# Example
+freq_dict = {'a': 5, 'b': 9, 'c': 12, 'd': 13, 'e': 16, 'f': 45}
+codes = huffman(freq_dict)
+print("Huffman Codes:", codes)
+```
+
+---
+
+### 3. **Fractional Knapsack**
+
+```python
+def fractional_knapsack(W, items):
+    # items = [(weight, value), ...]
+    items.sort(key=lambda x: x[1]/x[0], reverse=True)
+    total_value = 0.0
+    for w, v in items:
+        if W >= w:
+            W -= w
+            total_value += v
+        else:
+            total_value += v * (W / w)
+            break
+    return total_value
+
+# Example
+W = 50
+items = [(10, 60), (20, 100), (30, 120)]
+print("Max value in Fractional Knapsack:", fractional_knapsack(W, items))
+```
+
+---
+
+### 4. **0-1 Knapsack (Dynamic Programming)**
+
+```python
+def knapsack(W, wt, val):
+    n = len(wt)
+    dp = [[0]*(W+1) for _ in range(n+1)]
+    for i in range(1, n+1):
+        for w in range(W+1):
+            if wt[i-1] <= w:
+                dp[i][w] = max(dp[i-1][w], dp[i-1][w-wt[i-1]] + val[i-1])
+            else:
+                dp[i][w] = dp[i-1][w]
+    return dp[n][W]
+
+# Example
+W = 50
+wt = [10, 20, 30]
+val = [60, 100, 120]
+print("Max value in 0-1 Knapsack:", knapsack(W, wt, val))
+```
+
+---
+
+### 5. **N-Queens Problem**
+
+```python
+def solveNQueens(n):
+    results = []
+    def isSafe(board, row, col):
+        for i in range(row):
+            if board[i] == col or abs(board[i] - col) == row - i:
+                return False
+        return True
+
+    def solve(board, row):
+        if row == n:
+            results.append(board[:])
+            return
+        for col in range(n):
+            if isSafe(board, row, col):
+                board[row] = col
+                solve(board, row+1)
+
+    solve([0]*n, 0)
+    return results
+
+# Example
+n = 4
+solutions = solveNQueens(n)
+print(f"{len(solutions)} solutions for {n}-Queens:")
+for sol in solutions:
+    for i in range(n):
+        row = ['.']*n
+        row[sol[i]] = 'Q'
+        print(' '.join(row))
+    print()
+```
+
+---
+
+### 6. **Quick Sort**
+
+```python
+import random
+
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[random.randint(0, len(arr)-1)]
+    left = [x for x in arr if x < pivot]
+    mid = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + mid + quicksort(right)
+
+# Example
+arr = [10, 7, 8, 9, 1, 5]
+sorted_arr = quicksort(arr)
+print("Original array:", arr)
+print("Sorted array:", sorted_arr)
+```
+
+---
+
+✅ These are **full, working versions** of each algorithm, including examples you can directly run to see outputs.
+
+If you want, I can also **combine all 6 codes into a single Python file** with **menu-driven input**, so you can test any of them from one script. That’s extremely convenient for practice.
+
+Do you want me to do that?

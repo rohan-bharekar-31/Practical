@@ -1,0 +1,365 @@
+1. Fibonacci Numbers (Recursive & Non-Recursive)
+
+Theory:
+Fibonacci sequence: 
+𝐹
+0
+=
+0
+,
+𝐹
+1
+=
+1
+,
+𝐹
+𝑛
+=
+𝐹
+𝑛
+−
+1
++
+𝐹
+𝑛
+−
+2
+F
+0
+	​
+
+=0,F
+1
+	​
+
+=1,F
+n
+	​
+
+=F
+n−1
+	​
+
++F
+n−2
+	​
+
+. It is widely used to teach recursion, dynamic programming, and iterative approaches.
+
+Approaches:
+
+Recursive: Simple implementation, calls itself for previous two numbers.
+
+F(n) = F(n-1) + F(n-2)
+
+
+Non-recursive (Iterative): Uses loop to calculate Fibonacci numbers sequentially.
+
+Time Complexity:
+
+Recursive: 
+𝑂
+(
+2
+𝑛
+)
+O(2
+n
+) (exponential, due to repeated calls)
+
+Iterative: 
+𝑂
+(
+𝑛
+)
+O(n)
+
+Space Complexity:
+
+Recursive: 
+𝑂
+(
+𝑛
+)
+O(n) (call stack)
+
+Iterative: 
+𝑂
+(
+1
+)
+O(1)
+
+2. Huffman Encoding (Greedy)
+
+Theory:
+Huffman coding is a greedy algorithm used for data compression. It assigns variable-length codes to characters, with shorter codes for more frequent characters.
+
+Approach:
+
+Count frequency of each character.
+
+Create a priority queue (min-heap) of characters based on frequency.
+
+Repeat until only one node remains:
+
+Extract two nodes with smallest frequency.
+
+Combine them into a new node (sum of frequencies).
+
+Insert the new node back into the queue.
+
+Traverse tree to assign codes.
+
+Time Complexity:
+
+Building min-heap: 
+𝑂
+(
+𝑛
+)
+O(n)
+
+Huffman tree construction: 
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)
+
+Assign codes: 
+𝑂
+(
+𝑛
+)
+O(n)
+
+Space Complexity:
+
+𝑂
+(
+𝑛
+)
+O(n) for tree and heap.
+
+3. Fractional Knapsack (Greedy)
+
+Theory:
+In fractional knapsack, items can be broken into fractions. Goal: maximize value with weight limit 
+𝑊
+W.
+
+Approach:
+
+Compute value/weight ratio for each item.
+
+Sort items in decreasing ratio.
+
+Pick items fully if possible; pick fraction if remaining capacity is less.
+
+Time Complexity:
+
+Sorting: 
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)
+
+Picking items: 
+𝑂
+(
+𝑛
+)
+O(n)
+
+Total: 
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)
+
+Space Complexity:
+
+𝑂
+(
+𝑛
+)
+O(n) for storing ratios (or original items list)
+
+4. 0-1 Knapsack (DP or Branch & Bound)
+
+Theory:
+In 0-1 Knapsack, items cannot be broken. Goal: maximize value under weight limit 
+𝑊
+W.
+
+Approach 1: Dynamic Programming
+
+Create DP table dp[i][w] = max value using first i items with weight w.
+
+Recurrence:
+
+dp[i][w] = max(dp[i-1][w], dp[i-1][w-wt[i]] + val[i])
+
+
+Approach 2: Branch & Bound
+
+Explore subsets recursively, prune branches with weight exceeding capacity or bound value < current max.
+
+Time Complexity:
+
+DP: 
+𝑂
+(
+𝑛
+⋅
+𝑊
+)
+O(n⋅W)
+
+Branch & Bound: Exponential in worst case, depends on pruning efficiency.
+
+Space Complexity:
+
+DP: 
+𝑂
+(
+𝑛
+⋅
+𝑊
+)
+O(n⋅W)
+
+Branch & Bound: 
+𝑂
+(
+𝑛
+)
+O(n) recursion stack
+
+5. N-Queens Problem (Backtracking)
+
+Theory:
+Place n queens on an n×n board such that no two queens threaten each other.
+
+Approach (Backtracking):
+
+Place the first queen in a column of the first row.
+
+Move to next row and try placing a queen in safe column.
+
+If no column is safe, backtrack.
+
+Continue until all queens are placed.
+
+Time Complexity:
+
+Worst case: 
+𝑂
+(
+𝑛
+!
+)
+O(n!) (all permutations explored)
+
+Pruning reduces average complexity.
+
+Space Complexity:
+
+𝑂
+(
+𝑛
+2
+)
+O(n
+2
+) for board representation (or 
+𝑂
+(
+𝑛
+)
+O(n) if using column array)
+
+6. Quick Sort Analysis (Deterministic & Randomized)
+
+Theory:
+Quick Sort: Divide-and-conquer sorting algorithm. Picks a pivot, partitions array, recursively sorts partitions.
+
+Approach:
+
+Deterministic: Pivot is fixed (first/last/median element).
+
+Randomized: Pivot is chosen randomly to reduce worst-case probability.
+
+Time Complexity:
+
+Deterministic:
+
+Best/Average: 
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)
+
+Worst: 
+𝑂
+(
+𝑛
+2
+)
+O(n
+2
+) (if already sorted or bad pivot)
+
+Randomized:
+
+Best/Average: 
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)
+
+Worst: 
+𝑂
+(
+𝑛
+2
+)
+O(n
+2
+) (highly unlikely)
+
+Space Complexity:
+
+𝑂
+(
+log
+⁡
+𝑛
+)
+O(logn) for recursion stack in average case
+
+𝑂
+(
+𝑛
+)
+O(n) in worst case (deterministic worst)
