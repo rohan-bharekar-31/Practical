@@ -1,0 +1,480 @@
+CUDA THEORY + QUICK NOTES
+
+============================================================
+
+1. WHAT IS CUDA?
+
+CUDA = Compute Unified Device Architecture
+
+CUDA is a parallel computing platform developed by NVIDIA.
+
+It allows GPU programming using C/C++.
+
+CUDA is used to perform computations on GPU instead of CPU.
+
+GPU contains thousands of smaller cores, so it can execute many operations simultaneously.
+
+---
+
+2. CPU VS GPU
+
+CPU:
+
+* Few powerful cores
+* Best for sequential tasks
+* Good for logic and control
+
+GPU:
+
+* Thousands of small cores
+* Best for parallel tasks
+* Good for vector and matrix operations
+
+---
+
+3. WHAT IS PARALLEL COMPUTING?
+
+Parallel computing means:
+performing multiple operations simultaneously using multiple processors/threads.
+
+Example:
+
+A = 1 2 3
+B = 4 5 6
+
+Addition:
+
+C = 5 7 9
+
+Instead of:
+one processor doing all additions,
+
+GPU does:
+
+* Thread 1 -> 1+4
+* Thread 2 -> 2+5
+* Thread 3 -> 3+6
+
+simultaneously.
+
+---
+
+4. CUDA EXECUTION MODEL
+
+CUDA uses:
+
+* Threads
+* Blocks
+* Grids
+
+Hierarchy:
+
+Grid
+-> Blocks
+-> Threads
+
+Each thread performs one small task.
+
+---
+
+5. CUDA WORKFLOW
+
+Every CUDA program follows these steps:
+
+1. Create data on CPU
+2. Allocate memory on GPU
+3. Copy data from CPU to GPU
+4. Launch kernel
+5. GPU performs computation
+6. Copy result back to CPU
+7. Free GPU memory
+
+VERY IMPORTANT FLOW.
+
+---
+
+6. IMPORTANT CUDA KEYWORDS
+
+---
+
+**global**
+
+Meaning:
+function runs on GPU.
+
+Called:
+Kernel Function
+
+Example:
+
+**global** void add()
+{
+}
+
+---
+
+threadIdx.x
+
+Returns:
+thread number inside block.
+
+Example:
+
+Thread 0 -> threadIdx.x = 0
+Thread 1 -> threadIdx.x = 1
+
+---
+
+cudaMalloc()
+
+Allocates memory on GPU.
+
+Similar to malloc/new but for GPU memory.
+
+Example:
+
+cudaMalloc((void**)&d_A, n*sizeof(int));
+
+---
+
+cudaMemcpy()
+
+Copies data between CPU and GPU.
+
+CPU -> GPU:
+cudaMemcpyHostToDevice
+
+GPU -> CPU:
+cudaMemcpyDeviceToHost
+
+---
+
+cudaFree()
+
+Frees GPU memory.
+
+---
+
+KERNEL LAUNCH SYNTAX
+
+Syntax:
+
+kernel<<<blocks, threads>>>();
+
+Example:
+
+vectorAdd<<<1,n>>>();
+
+Meaning:
+1 block containing n threads.
+
+---
+
+7. VECTOR ADDITION THEORY
+
+Vector Addition Formula:
+
+C[i] = A[i] + B[i]
+
+Each GPU thread computes one element.
+
+Example:
+
+A = 1 2 3
+B = 4 5 6
+
+Threads:
+
+T0 -> 1+4
+T1 -> 2+5
+T2 -> 3+6
+
+Result:
+5 7 9
+
+---
+
+8. VECTOR ADDITION CUDA PROGRAM
+
+#include <iostream>
+#include <cuda_runtime.h>
+
+using namespace std;
+
+// GPU kernel function
+**global** void vectorAdd(int *A, int *B, int *C)
+{
+// Get thread index
+int i = threadIdx.x;
+
+```
+// Each thread adds one element
+C[i] = A[i] + B[i];
+```
+
+}
+
+int main()
+{
+int n = 5;
+
+```
+int A[] = {1,2,3,4,5};
+int B[] = {10,20,30,40,50};
+int C[n];
+
+// GPU pointers
+int *d_A, *d_B, *d_C;
+
+// Allocate GPU memory
+cudaMalloc((void**)&d_A, n*sizeof(int));
+cudaMalloc((void**)&d_B, n*sizeof(int));
+cudaMalloc((void**)&d_C, n*sizeof(int));
+
+// Copy CPU data to GPU
+cudaMemcpy(d_A, A, n*sizeof(int), cudaMemcpyHostToDevice);
+cudaMemcpy(d_B, B, n*sizeof(int), cudaMemcpyHostToDevice);
+
+// Launch kernel
+vectorAdd<<<1,n>>>(d_A, d_B, d_C);
+
+// Copy result back to CPU
+cudaMemcpy(C, d_C, n*sizeof(int), cudaMemcpyDeviceToHost);
+
+// Print result
+cout << "Vector Addition Result:\n";
+
+for(int i=0; i<n; i++)
+{
+    cout << C[i] << " ";
+}
+
+// Free GPU memory
+cudaFree(d_A);
+cudaFree(d_B);
+cudaFree(d_C);
+
+return 0;
+```
+
+}
+
+---
+
+9. VECTOR ADDITION IMPORTANT THEORY
+
+threadIdx.x:
+returns thread number.
+
+Each thread computes:
+C[i] = A[i] + B[i]
+
+GPU executes all additions simultaneously.
+
+---
+
+10. MATRIX MULTIPLICATION THEORY
+
+Matrix Multiplication Formula:
+
+C[i][j] = Sum of:
+A[i][k] * B[k][j]
+
+Example:
+
+A:
+1 2
+3 4
+
+B:
+5 6
+7 8
+
+Result:
+
+19 22
+43 50
+
+---
+
+11. CUDA MATRIX MULTIPLICATION IDEA
+
+Each thread computes:
+ONE matrix element.
+
+Example:
+
+Thread(0,0):
+computes C[0][0]
+
+Thread(0,1):
+computes C[0][1]
+
+etc.
+
+---
+
+12. MATRIX MULTIPLICATION CUDA PROGRAM
+
+#include <iostream>
+#include <cuda_runtime.h>
+
+using namespace std;
+
+#define N 2
+
+// GPU kernel function
+**global** void matrixMul(int A[N][N], int B[N][N], int C[N][N])
+{
+// Row index
+int row = threadIdx.x;
+
+```
+// Column index
+int col = threadIdx.y;
+
+C[row][col] = 0;
+
+// Matrix multiplication
+for(int k=0; k<N; k++)
+{
+    C[row][col] += A[row][k] * B[k][col];
+}
+```
+
+}
+
+int main()
+{
+int A[N][N] = {{1,2},{3,4}};
+int B[N][N] = {{5,6},{7,8}};
+int C[N][N];
+
+```
+int (*d_A)[N], (*d_B)[N], (*d_C)[N];
+
+// Allocate GPU memory
+cudaMalloc(&d_A, sizeof(A));
+cudaMalloc(&d_B, sizeof(B));
+cudaMalloc(&d_C, sizeof(C));
+
+// Copy matrices to GPU
+cudaMemcpy(d_A, A, sizeof(A), cudaMemcpyHostToDevice);
+cudaMemcpy(d_B, B, sizeof(B), cudaMemcpyHostToDevice);
+
+// Create 2D thread structure
+dim3 threads(N,N);
+
+// Launch kernel
+matrixMul<<<1,threads>>>(d_A, d_B, d_C);
+
+// Copy result back
+cudaMemcpy(C, d_C, sizeof(C), cudaMemcpyDeviceToHost);
+
+// Print result
+cout << "Matrix Multiplication Result:\n";
+
+for(int i=0; i<N; i++)
+{
+    for(int j=0; j<N; j++)
+    {
+        cout << C[i][j] << " ";
+    }
+
+    cout << endl;
+}
+
+// Free GPU memory
+cudaFree(d_A);
+cudaFree(d_B);
+cudaFree(d_C);
+
+return 0;
+```
+
+}
+
+---
+
+13. dim3
+
+dim3 creates 2D thread arrangement.
+
+Used for:
+
+* matrices
+* grids
+* images
+
+---
+
+14. threadIdx.y
+
+threadIdx.x -> row index
+
+threadIdx.y -> column index
+
+---
+
+15. IMPORTANT VIVA QUESTIONS
+
+Q. What is CUDA?
+CUDA is a GPU parallel computing platform developed by NVIDIA.
+
+---
+
+Q. What is a kernel?
+A kernel is a GPU function executed by many threads in parallel.
+
+---
+
+Q. What does **global** mean?
+Function runs on GPU and is called from CPU.
+
+---
+
+Q. What is threadIdx.x?
+It returns thread number.
+
+---
+
+Q. What does cudaMalloc do?
+Allocates memory on GPU.
+
+---
+
+Q. What does cudaMemcpy do?
+Copies data between CPU and GPU.
+
+---
+
+Q. Why use GPU?
+GPU provides massive parallelism and faster computation for large data.
+
+---
+
+Q. What is kernel launch syntax?
+
+kernel<<<blocks,threads>>>();
+
+---
+
+16. COMPILATION COMMAND
+
+nvcc file.cu
+
+Run:
+
+./a.out
+
+---
+
+17. IMPORTANT DIFFERENCE
+
+OpenMP:
+CPU parallel programming
+
+CUDA:
+GPU parallel programming
+
+============================================================

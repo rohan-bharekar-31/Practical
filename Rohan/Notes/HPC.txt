@@ -1,0 +1,157 @@
+# Common OpenMP Instructions
+
+1. Parallel Region
+   What it does: Creates multiple threads and executes block in parallel.
+   Syntax:
+   #pragma omp parallel
+   {
+   // code
+   }
+
+---
+
+2. Parallel For
+   What it does: Divides loop iterations among multiple threads.
+   Syntax:
+   #pragma omp parallel for
+   for(int i=0; i<n; i++)
+   {
+   // code
+   }
+
+---
+
+3. Parallel Sections
+   What it does: Executes different code sections simultaneously.
+   Syntax:
+   #pragma omp parallel sections
+   {
+   #pragma omp section
+   {
+   // task 1
+   }
+
+   #pragma omp section
+   {
+   // task 2
+   }
+   }
+
+---
+
+4. Section
+   What it does: Defines one independent section.
+   Syntax:
+   #pragma omp section
+   {
+   // code
+   }
+
+---
+
+5. Critical
+   What it does: Allows only one thread at a time.
+   Syntax:
+   #pragma omp critical
+   {
+   // code
+   }
+
+---
+
+6. Atomic
+   What it does: Performs atomic update on shared variable.
+   Syntax:
+   #pragma omp atomic
+   x++;
+
+---
+
+7. Barrier
+   What it does: Stops threads until all threads reach same point.
+   Syntax:
+   #pragma omp barrier
+
+---
+
+8. Single
+   What it does: Executes block using only one thread.
+   Syntax:
+   #pragma omp single
+   {
+   // code
+   }
+
+---
+
+9. Master
+   What it does: Executes block only by master thread.
+   Syntax:
+   #pragma omp master
+   {
+   // code
+   }
+
+---
+
+10. Reduction
+    What it does: Combines results from multiple threads into single variable.
+    Syntax:
+    #pragma omp parallel for reduction(+:sum)
+    for(int i=0; i<n; i++)
+    {
+    sum += arr[i];
+    }
+
+---
+
+11. Private
+    What it does: Creates private copy of variable for each thread.
+    Syntax:
+    #pragma omp parallel private(x)
+
+---
+
+12. Shared
+    What it does: Allows all threads to access same variable.
+    Syntax:
+    #pragma omp parallel shared(arr)
+
+---
+
+13. Schedule
+    What it does: Controls distribution of loop iterations among threads.
+    Syntax:
+    #pragma omp parallel for schedule(static)
+
+OR
+
+#pragma omp parallel for schedule(dynamic)
+
+---
+
+14. Set Number of Threads
+    What it does: Sets number of threads.
+    Syntax:
+    omp_set_num_threads(4);
+
+---
+
+15. Get Thread Number
+    What it does: Returns current thread ID.
+    Syntax:
+    int id = omp_get_thread_num();
+
+---
+
+16. Get Total Threads
+    What it does: Returns total active threads.
+    Syntax:
+    int n = omp_get_num_threads();
+
+---
+
+17. Wall Time Function
+    What it does: Returns current execution time.
+    Syntax:
+    double t = omp_get_wtime();

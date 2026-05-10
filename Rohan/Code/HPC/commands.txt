@@ -1,0 +1,11 @@
+g++ -fopenmp HPCL_Exp_1.cpp -o HPCL_Exp_1
+./HPCL_Exp_1.exe  
+
+g++ -fopenmp HPCL_Exp_2.cpp -o HPCL_Exp_2
+./HPCL_Exp_2.exe  
+
+g++ -fopenmp HPCL_Exp_3.cpp -o HPCL_Exp_3
+./HPCL_Exp_3.exe  
+
+g++ -fopenmp HPCL_Exp_4.cpp -o HPCL_Exp_4
+./HPCL_Exp_4.exe  
